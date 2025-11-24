@@ -1,0 +1,12 @@
+django
+djangorestframework
+django-allauth
+dj-rest-auth
+openai
+python-dotenv
+django-cors-headers
+requests
+PyJWT
+cryptography
+djangorestframework-simplejwt
+drf-yasg>=1.21.7
