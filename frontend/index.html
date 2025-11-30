@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뉴럴 - 비밀 프로젝트</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <!-- 랜딩 화면 -->
+    <div id="landing-screen" class="screen">
+        <div class="landing-container">
+            <h1>뉴럴 - 비밀 프로젝트</h1>
+            <p class="landing-subtitle">시스템에 접속하시겠습니까?</p>
+            <button id="enter-btn" class="btn-primary">접속하기</button>
+        </div>
+    </div>
+
+    <!-- 로그인 화면 -->
+    <div id="login-screen" class="screen hidden">
+        <div class="login-container">
+            <h1>시스템 접근</h1>
+            <div class="input-group">
+                <label for="username">아이디</label>
+                <input type="text" id="username" class="input-field" placeholder="Username">
+            </div>
+            <div class="input-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" class="input-field" placeholder="Password">
+            </div>
+            <button id="login-btn" class="btn-primary">로그인</button>
+            <div id="login-message" class="message"></div>
+        </div>
+    </div>
+
+    <!-- 게임 화면 -->
+    <div id="game-screen" class="screen hidden">
+        <div id="background" class="background"></div>
+        <div class="character-container">
+            <img id="character-image" class="character-image" src="" alt="Character">
+        </div>
+        
+        <!-- 호감도 표시 -->
+        <div class="affection-display">
+            <div class="affection-bar"><div id="affection-hyun" class="fill"></div><span>현정욱: <span id="affection-hyun-value">0</span></span></div>
+            <div class="affection-bar"><div id="affection-lee" class="fill"></div><span>이윤서: <span id="affection-lee-value">0</span></span></div>
+            <div class="affection-bar"><div id="affection-seok" class="fill"></div><span>석성택: <span id="affection-seok-value">0</span></span></div>
+            <div class="affection-bar"><div id="affection-ryu" class="fill"></div><span>류한석: <span id="affection-ryu-value">0</span></span></div>
+        </div>
+
+        <div class="dialogue-box">
+            <div id="speaker-name" class="speaker-name"></div>
+            <div id="dialogue-text" class="dialogue-text"></div>
+            <button id="next-btn" class="next-button">다음 ▶</button>
+        </div>
+
+        <div id="choices-container" class="choices-container hidden">
+            <div class="choices-title">선택하세요</div>
+            <button class="choice-btn" data-choice="0"></button>
+            <button class="choice-btn" data-choice="1"></button>
+            <button class="choice-btn" data-choice="2"></button>
+            <button class="choice-btn" data-choice="3"></button>
+        </div>
+    </div>
+
+    <!-- 엔딩 화면 -->
+    <div id="ending-screen" class="screen hidden">
+        <div class="ending-container">
+            <h2 id="ending-title"></h2>
+            <div id="ending-text" class="ending-text"></div>
+            <div class="button-group">
+                <button id="replay-btn" class="replay-button">다시하기</button>
+                <button id="restart-btn" class="restart-button">초기화</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>
+
