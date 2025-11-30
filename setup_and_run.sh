@@ -2,6 +2,17 @@
 
 echo "Starting setup..."
 
+# Check if .env exists
+if [ ! -f ".env" ]; then
+    echo "Creating .env file..."
+    cat <<EOT >> .env
+SECRET_KEY=django-insecure-dummy-key-change-me
+DEBUG=True
+ALLOWED_HOSTS=*
+OPENAI_API_KEY="sk-proj-bUhh0eedfPIHyrEj9d6QT3BlbkFJYaqiiofo18TyA0NkopRX"
+EOT
+fi
+
 # Check if venv exists
 if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."

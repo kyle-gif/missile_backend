@@ -1,6 +1,17 @@
 @echo off
 echo Starting setup...
 
+REM Check if .env exists
+if not exist ".env" (
+    echo Creating .env file...
+    (
+        echo SECRET_KEY=django-insecure-dummy-key-change-me
+        echo DEBUG=True
+        echo ALLOWED_HOSTS=*
+        echo OPENAI_API_KEY="sk-proj-bUhh0eedfPIHyrEj9d6QT3BlbkFJYaqiiofo18TyA0NkopRX"
+    ) > .env
+)
+
 REM Check if venv exists
 if not exist "venv" (
     echo Creating virtual environment...
