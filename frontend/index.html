@@ -4,7 +4,7 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>뉴럴 - 비밀 프로젝트</title>
+    <title>미연시 ~선린에서 일어난 기묘한 일들~</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>">
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
@@ -12,7 +12,7 @@
     <!-- 랜딩 화면 -->
     <div id="landing-screen" class="screen">
         <div class="landing-container">
-            <h1>뉴럴 - 비밀 프로젝트</h1>
+            <h1>미연시 ~선린에서 일어난 기묘한 일들~</h1>
             <p class="landing-subtitle">시스템에 접속하시겠습니까?</p>
             <button id="enter-btn" class="btn-primary">접속하기</button>
         </div>
@@ -30,11 +30,32 @@
                 <label for="password">비밀번호</label>
                 <input type="password" id="password" class="input-field" placeholder="Password">
             </div>
-            <button id="login-btn" class="btn-primary">로그인</button>
+            <div class="auth-buttons">
+                <button id="login-btn" class="btn-primary">로그인</button>
+                <button id="register-btn" class="btn-secondary">회원가입</button>
+            </div>
             <div id="login-message" class="message"></div>
         </div>
     </div>
 
+    <!-- 선택 화면 -->
+    <div id="selection-screen" class="screen hidden">
+        <div class="selection-container">
+            <h1>경로 선택</h1>
+            <div class="selection-buttons">
+                <div class="selection-card" id="select-game-btn">
+                    <div class="card-icon">🎮</div>
+                    <h2>스토리 시작</h2>
+                    <p>미연시의 비밀을 파헤치고 운명을 개척하세요.</p>
+                </div>
+                <div class="selection-card" id="select-chat-btn">
+                    <div class="card-icon">💬</div>
+                    <h2>캐릭터와 대화</h2>
+                    <p>동아리 부원들과 자유롭게 대화하세요.</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- 게임 화면 -->
     <div id="game-screen" class="screen hidden">
         <div id="background" class="background"></div>
@@ -71,7 +92,7 @@
             <h2 id="ending-title"></h2>
             <div id="ending-text" class="ending-text"></div>
             <div class="button-group">
-                <button id="replay-btn" class="replay-button">다시하기</button>
+                <button id="go-to-chat-btn" class="replay-button">채팅으로 이동</button>
                 <button id="restart-btn" class="restart-button">초기화</button>
             </div>
         </div>

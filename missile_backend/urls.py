@@ -44,6 +44,7 @@ urlpatterns = [
     path('auth/user/', UserView.as_view(), name='user'),
     path('character/<str:character>/info/', CharacterInfoView.as_view(), name='character-info'),
     path('character/<str:character>/chat/', ChatView.as_view(), name='character-chat'),
+    path('chat/', TemplateView.as_view(template_name='chat.html'), name='chat'),
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

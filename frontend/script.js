@@ -21,41 +21,13 @@ const characters = {
 };
 
 // DOM Elements
-const elements = {
-    screens: {
-        landing: document.getElementById('landing-screen'),
-        login: document.getElementById('login-screen'),
-        game: document.getElementById('game-screen'),
-        ending: document.getElementById('ending-screen')
-    },
-    landing: {
-        enterBtn: document.getElementById('enter-btn')
-    },
-    login: {
-        username: document.getElementById('username'),
-        btn: document.getElementById('login-btn'),
-        message: document.getElementById('login-message')
-    },
-    game: {
-        background: document.getElementById('background'),
-        characterImage: document.getElementById('character-image'),
-        speakerName: document.getElementById('speaker-name'),
-        dialogueText: document.getElementById('dialogue-text'),
-        nextBtn: document.getElementById('next-btn'),
-        choicesContainer: document.getElementById('choices-container'),
-        affectionBars: {
-            hyun: { bar: document.getElementById('affection-hyun'), val: document.getElementById('affection-hyun-value') },
-            lee: { bar: document.getElementById('affection-lee'), val: document.getElementById('affection-lee-value') },
-            seok: { bar: document.getElementById('affection-seok'), val: document.getElementById('affection-seok-value') },
-            ryu: { bar: document.getElementById('affection-ryu'), val: document.getElementById('affection-ryu-value') }
-        }
-    },
-    ending: {
-        title: document.getElementById('ending-title'),
-        text: document.getElementById('ending-text'),
-        replayBtn: document.getElementById('replay-btn'),
-        restartBtn: document.getElementById('restart-btn')
-    }
+let elements = {
+    screens: {},
+    landing: {},
+    login: {},
+    selection: {},
+    game: {},
+    ending: {}
 };
 
 // Story Data Generator
@@ -482,22 +454,121 @@ const choices = {
 
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
+    elements = {
+        screens: {
+            landing: document.getElementById('landing-screen'),
+            login: document.getElementById('login-screen'),
+            selection: document.getElementById('selection-screen'),
+            game: document.getElementById('game-screen'),
+            ending: document.getElementById('ending-screen')
+        },
+        landing: {
+            enterBtn: document.getElementById('enter-btn')
+        },
+        login: {
+            username: document.getElementById('username'),
+            btn: document.getElementById('login-btn'),
+            registerBtn: document.getElementById('register-btn'),
+            message: document.getElementById('login-message')
+        },
+        selection: {
+            gameBtn: document.getElementById('select-game-btn'),
+            chatBtn: document.getElementById('select-chat-btn')
+        },
+        game: {
+            background: document.getElementById('background'),
+            characterImage: document.getElementById('character-image'),
+            speakerName: document.getElementById('speaker-name'),
+            dialogueText: document.getElementById('dialogue-text'),
+            nextBtn: document.getElementById('next-btn'),
+            choicesContainer: document.getElementById('choices-container'),
+            affectionBars: {
+                hyun: { bar: document.getElementById('affection-hyun'), val: document.getElementById('affection-hyun-value') },
+                lee: { bar: document.getElementById('affection-lee'), val: document.getElementById('affection-lee-value') },
+                seok: { bar: document.getElementById('affection-seok'), val: document.getElementById('affection-seok-value') },
+                ryu: { bar: document.getElementById('affection-ryu'), val: document.getElementById('affection-ryu-value') }
+            }
+        },
+        ending: {
+            title: document.getElementById('ending-title'),
+            text: document.getElementById('ending-text'),
+            chatBtn: document.getElementById('go-to-chat-btn'),
+            restartBtn: document.getElementById('restart-btn')
+        }
+    };
+
     if (elements.landing.enterBtn) elements.landing.enterBtn.addEventListener('click', () => switchScreen('login'));
     if (elements.login.btn) elements.login.btn.addEventListener('click', handleLogin);
+    if (elements.login.registerBtn) elements.login.registerBtn.addEventListener('click', handleRegister);
+    if (elements.selection.gameBtn) elements.selection.gameBtn.addEventListener('click', startGame);
+    if (elements.selection.chatBtn) elements.selection.chatBtn.addEventListener('click', () => window.location.href = '/chat/');
     if (elements.game.nextBtn) elements.game.nextBtn.addEventListener('click', nextScene);
-    if (elements.ending.replayBtn) elements.ending.replayBtn.addEventListener('click', startGame);
+    if (elements.ending.chatBtn) elements.ending.chatBtn.addEventListener('click', goToChat);
     if (elements.ending.restartBtn) elements.ending.restartBtn.addEventListener('click', () => location.reload());
 });
 
 // Logic
-function handleLogin() {
-    const name = elements.login.username.value.trim();
-    if (!name) {
-        elements.login.message.textContent = '아이디를 입력해주세요.';
+async function handleLogin() {
+    const username = elements.login.username.value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!username || !password) {
+        elements.login.message.textContent = '아이디와 비밀번호를 입력해주세요.';
         return;
     }
-    gameState.playerName = name;
-    startGame();
+
+    try {
+        const response = await fetch('/auth/login/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem('token', data.token);
+            gameState.playerName = data.user.username; // Use server username
+            switchScreen('selection');
+        } else {
+            elements.login.message.textContent = data.error || '로그인 실패';
+        }
+    } catch (error) {
+        elements.login.message.textContent = '서버 오류가 발생했습니다.';
+    }
+}
+
+async function handleRegister() {
+    const username = elements.login.username.value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!username || !password) {
+        elements.login.message.textContent = '아이디와 비밀번호를 입력해주세요.';
+        return;
+    }
+
+    try {
+        const response = await fetch('/auth/register/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem('token', data.token);
+            gameState.playerName = data.user.username;
+            alert('회원가입 성공!');
+            switchScreen('selection');
+        } else {
+            // Handle specific error messages (e.g., username taken)
+            const errorMsg = data.username ? `아이디 오류: ${data.username[0]}` : (data.error || '회원가입 실패');
+            elements.login.message.textContent = errorMsg;
+        }
+    } catch (error) {
+        elements.login.message.textContent = '서버 오류가 발생했습니다.';
+    }
 }
 
 function switchScreen(screenName) {
@@ -648,5 +719,34 @@ function showEnding(type) {
     
     if (elements.ending.title) elements.ending.title.textContent = ending.title;
     if (elements.ending.text) elements.ending.text.textContent = ending.text;
+    if (elements.ending.text) elements.ending.text.textContent = ending.text;
     switchScreen('ending');
+}
+
+async function goToChat() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('로그인이 필요합니다.');
+        location.reload();
+        return;
+    }
+
+    // Sync affection scores to backend
+    const updates = Object.entries(gameState.affection).map(async ([char, score]) => {
+        try {
+            await fetch(`/character/${char}/info/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`
+                },
+                body: JSON.stringify({ hogamdo: score })
+            });
+        } catch (e) {
+            console.error(`Failed to update affection for ${char}`, e);
+        }
+    });
+
+    await Promise.all(updates);
+    window.location.href = '/chat/';
 }

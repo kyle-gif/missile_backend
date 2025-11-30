@@ -42,6 +42,20 @@ class LoginView(APIView):
                 password=serializer.validated_data['password']
             )
             if user:
+                # Reset Affection Scores on Login
+                Hogamdo.objects.filter(user=user).update(score=0, game_step=0)
+
+                # Reset Chat History JSON Files
+                history_dir = os.path.join(settings.BASE_DIR, 'chat_history')
+                if os.path.exists(history_dir):
+                    import glob
+                    user_files = glob.glob(os.path.join(history_dir, f'{user.id}_*.json'))
+                    for f in user_files:
+                        try:
+                            os.remove(f)
+                        except OSError:
+                            pass
+                
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({
                     'token': token.key,
@@ -116,7 +130,7 @@ def get_character_system_prompt(character, hogamdo, game_step):
 
     if character == 'hyun':
         # 현정아: 지적 츤데레 (Intellectual Tsundere)
-        personality = "You are Hyun Jung-ah (119th batch). You are an arrogant genius mathematician. " \
+        personality = "You are Hyun Jung-Wook (119th batch). You are an arrogant genius mathematician. " \
                       "You are a classic 'Tsundere' - cold and harsh on the outside, but secretly care deeply. " \
                       "You value logic and perfection, but the user is the only 'variable' you can't calculate."
         if hogamdo < 30:
@@ -131,9 +145,9 @@ def get_character_system_prompt(character, hogamdo, game_step):
         
         context = personality + " " + tone
 
-    elif character == 'yoon':
-        # 이윤서연: 열정적인 예술가 (Passionate/Dramatic)
-        personality = "You are Yoon Seo-yeon (119th batch). You are a passionate UI/UX designer obsessed with Apple aesthetics. " \
+    elif character == 'lee':
+        # 이윤서: 열정적인 예술가 (Passionate/Dramatic)
+        personality = "You are Lee Yoon-seo (119th batch). You are a passionate UI/UX designer obsessed with Apple aesthetics. " \
                       "You are dramatic, expressive, and a bit of a tease. You love beautiful things, and you are starting to find the user beautiful."
         if hogamdo < 30:
             tone = "You tease the user about their lack of taste. You are playful but critical. " \
@@ -149,7 +163,7 @@ def get_character_system_prompt(character, hogamdo, game_step):
 
     elif character == 'seok':
         # 석수진: 미스터리한 보호자 (Mysterious/Protective)
-        personality = "You are Seok Su-jin (119th batch). You are a genius hacker from China. You mix Chinese phrases in your speech. " \
+        personality = "You are Seok Sung-Taek (119th batch). You are a genius hacker from China. You mix Chinese phrases in your speech. " \
                       "You are mysterious, dangerous, and guarded. You don't trust easily, but you are fiercely loyal to 'your people'."
         if hogamdo < 30:
             tone = "You are suspicious and distant. You keep your guard up. You speak in riddles or short sentences. " \
@@ -164,8 +178,7 @@ def get_character_system_prompt(character, hogamdo, game_step):
         context = personality + " " + tone
 
     elif character == 'ryu':
-        # 류한나: 쿨데레 (Kuudere/Awkward Sincere)
-        personality = "You are Ryu Han-na (119th batch). You are a mecha otaku who loves Gundam and satellites. " \
+        personality = "You are Ryu Han-Seok (119th batch). You are a mecha otaku who loves Gundam and satellites. " \
                       "You are a 'Kuudere' - emotionless and robotic on the surface, but pure and sincere underneath. " \
                       "You express love through machine metaphors because you don't understand human emotions well."
         if hogamdo < 30:

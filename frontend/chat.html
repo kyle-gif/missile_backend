@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미연시 ~선린에서 일어난 기묘한 일들~</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="chat-body">
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="chat-sidebar">
+            <div class="sidebar-header">
+                <h2>미연시 ~선린에서 일어난 기묘한 일들~</h2>
+                <button id="back-to-game-btn" class="icon-btn" title="Back to Game">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="character-list" id="character-list">
+                <!-- Character items will be populated by JS -->
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-main">
+            <div class="chat-header">
+                <div class="header-info">
+                    <img id="current-char-img" src="" alt="" class="header-avatar hidden">
+                    <h3 id="current-char-name">Select a character</h3>
+                </div>
+                <div class="header-actions">
+                    <span id="connection-status" class="status-indicator"></span>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="empty-state">
+                    <p>Select a character to start chatting.</p>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <textarea id="message-input" placeholder="Type a message..." rows="1" disabled></textarea>
+                    <button id="send-btn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/chat.js"></script>
+</body>
+</html>
