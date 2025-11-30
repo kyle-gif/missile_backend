@@ -1,5 +1,5 @@
 """
-URL configuration for config project.
+URL configuration for missile_backend project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -19,6 +19,7 @@ from django.urls import path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from .views import CharacterInfoView, ChatView, RegisterView, LoginView, LogoutView, UserView
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -35,8 +36,13 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('api.urls')),
+    path('auth/register/', RegisterView.as_view(), name='register'),
+    path('auth/login/', LoginView.as_view(), name='login'),
+    path('auth/logout/', LogoutView.as_view(), name='logout'),
+    path('auth/user/', UserView.as_view(), name='user'),
+    path('character/<str:character>/info/', CharacterInfoView.as_view(), name='character-info'),
+    path('character/<str:character>/chat/', ChatView.as_view(), name='character-chat'),
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

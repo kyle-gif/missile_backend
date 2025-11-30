@@ -7,12 +7,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password')
+        fields = ('id', 'username', 'password')
 
     def create(self, validated_data):
         user = User.objects.create_user(
             username=validated_data['username'],
-            email=validated_data.get('email', ''),
             password=validated_data['password']
         )
         return user
@@ -21,6 +20,9 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
+class ChatSerializer(serializers.Serializer):
+    message = serializers.CharField()
+
 class CharacterInfoSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='character')
     hogamdo = serializers.IntegerField(source='score')
@@ -28,3 +30,11 @@ class CharacterInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hogamdo
         fields = ('name', 'hogamdo', 'game_step')
+
+class CharacterUpdateSerializer(serializers.ModelSerializer):
+    hogamdo = serializers.IntegerField(source='score', required=False)
+    game_step = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Hogamdo
+        fields = ('hogamdo', 'game_step')

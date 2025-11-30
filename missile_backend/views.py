@@ -7,13 +7,15 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.conf import settings
 from .models import Hogamdo
-from .serializers import UserSerializer, LoginSerializer, CharacterInfoSerializer
+from .serializers import UserSerializer, LoginSerializer, CharacterInfoSerializer, ChatSerializer, CharacterUpdateSerializer
+from drf_yasg.utils import swagger_auto_schema
 import openai
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     serializer_class = UserSerializer
 
+    @swagger_auto_schema(request_body=UserSerializer)
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -29,6 +31,7 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
     serializer_class = LoginSerializer
 
+    @swagger_auto_schema(request_body=LoginSerializer)
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -59,12 +62,17 @@ class UserView(APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
+    @swagger_auto_schema(request_body=UserSerializer)
     def put(self, request):
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        request.user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class CharacterInfoView(RetrieveAPIView):
     permission_classes = [IsAuthenticated]
@@ -84,9 +92,22 @@ class CharacterInfoView(RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+    @swagger_auto_schema(request_body=CharacterUpdateSerializer)
+    def patch(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return Response({'error': 'Invalid character'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = CharacterUpdateSerializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class ChatView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(request_body=ChatSerializer)
     def post(self, request, character):
         message = request.data.get('message')
         if not message:
@@ -109,7 +130,7 @@ class ChatView(APIView):
         try:
             client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
             response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4.1",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": message}
