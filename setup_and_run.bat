@@ -8,7 +8,7 @@ if not exist ".env" (
         echo SECRET_KEY=django-insecure-dummy-key-change-me
         echo DEBUG=True
         echo ALLOWED_HOSTS=*
-        echo OPENAI_API_KEY="sk-proj-bUhh0eedfPIHyrEj9d6QT3BlbkFJYaqiiofo18TyA0NkopRX"
+        echo OPENAI_API_KEY=""
     ) > .env
 )
 

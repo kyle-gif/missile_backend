@@ -9,7 +9,7 @@ if [ ! -f ".env" ]; then
 SECRET_KEY=django-insecure-dummy-key-change-me
 DEBUG=True
 ALLOWED_HOSTS=*
-OPENAI_API_KEY="sk-proj-bUhh0eedfPIHyrEj9d6QT3BlbkFJYaqiiofo18TyA0NkopRX"
+OPENAI_API_KEY=""
 EOT
 fi
 
